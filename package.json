@@ -1,0 +1,26 @@
+{
+  "name": "condenser2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@mistralai/mistralai": "^1.3.5",
+    "@noble/hashes": "^1.6.1",
+    "dotenv": "^16.4.7",
+    "nostr-tools": "^2.10.4",
+    "ollama": "^0.5.10",
+    "openai": "^4.76.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.2"
+  }
+}
