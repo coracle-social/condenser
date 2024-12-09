@@ -8,7 +8,7 @@ global.WebSocket = WebSocket as any
 
 const TIMEFRAME = 6 * 60 * 60;
 const READ_RELAY_URL = 'wss://news.utxo.one';
-const WRITE_RELAY_URL = 'wss://nos.lol';
+const WRITE_RELAY_URLS = ['wss://nos.lol', 'wss://relay.damus.io/', 'wss://relay.primal.net/'];
 
 const mistral = new Mistral({apiKey: process.env.MISTRAL_API_KEY!});
 
@@ -43,7 +43,7 @@ async function analyzeEvents(events: any[]) {
   =============================================================================
   Now, please identify the 5 most mentioned events in world events, politics, business, and economy.
   For each event, provide a brief summary and the most relevant link. Do not use markdown.
-  Do not duplicate entries. Strip url trackers.
+  Do not duplicate entries.
   `
   const response = await mistral.chat.complete({
     model: 'mistral-tiny',
@@ -68,15 +68,17 @@ async function main() {
   const created_at = Math.floor(Date.now() / 1000);
   const template = {kind: 1, created_at, tags: [], content};
   const event = finalizeEvent(template, secret);
-  const relay = await Relay.connect(WRITE_RELAY_URL);
 
   if (process.env.DRY_RUN === 'true') {
     console.log(event.content);
   } else {
-    await relay.publish(event);
-  }
+    for (const url of WRITE_RELAY_URLS) {
+      const relay = await Relay.connect(url);
 
-  relay.close();
+      await relay.publish(event);
+      await relay.close();
+    }
+  }
 
   console.log(`Done!`)
 }
